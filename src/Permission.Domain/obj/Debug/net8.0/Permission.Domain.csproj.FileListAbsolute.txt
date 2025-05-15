@@ -5,6 +5,7 @@ D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net
 D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net8.0\Permission.Domain.AssemblyInfoInputs.cache
 D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net8.0\Permission.Domain.AssemblyInfo.cs
 D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net8.0\Permission.Domain.csproj.CoreCompileInputs.cache
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net8.0\Permission.Domain.sourcelink.json
 D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net8.0\Permission.Domain.dll
 D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net8.0\refint\Permission.Domain.dll
 D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Domain\obj\Debug\net8.0\Permission.Domain.pdb

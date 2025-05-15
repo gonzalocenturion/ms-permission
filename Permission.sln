@@ -8,9 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B78A7FA2-69EE-4E16-9203-3A673588E51B}"
-	ProjectSection(SolutionItems) = preProject
-		src\Permission.API\Dockerfile = src\Permission.API\Dockerfile
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Permission.Infrastructure", "src\Permission.Infrastructure\Permission.Infrastructure.csproj", "{47E9034A-CB0D-4258-A112-8E8F031F73DD}"
 EndProject

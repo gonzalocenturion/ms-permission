@@ -10,18 +10,18 @@ public class PermissionConfiguration : IEntityTypeConfiguration<Domain.Entities.
     public void Configure(EntityTypeBuilder<Domain.Entities.Permission> builder)
     {
         builder.HasOne(p => p.PermissionType)
-            .WithMany()
-            .HasForeignKey(p => p.PermissionTypeId);
+               .WithMany()
+               .HasForeignKey(p => p.PermissionTypeId);
 
         builder.Property(p => p.EmployeeForename)
-            .IsRequired()
-            .HasMaxLength(NAME_MAX_LEN);
+               .IsRequired()
+               .HasMaxLength(NAME_MAX_LEN);
 
         builder.Property(p => p.EmployeeSurname)
-            .IsRequired()
-            .HasMaxLength(NAME_MAX_LEN);
+               .IsRequired()
+               .HasMaxLength(NAME_MAX_LEN);
 
         builder.Property(t => t.PermissionDate)
-           .IsRequired();
+               .IsRequired();
     }
 }
