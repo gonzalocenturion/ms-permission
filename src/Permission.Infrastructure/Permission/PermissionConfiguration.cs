@@ -10,7 +10,7 @@ public class PermissionConfiguration : IEntityTypeConfiguration<Domain.Entities.
     public void Configure(EntityTypeBuilder<Domain.Entities.Permission> builder)
     {
         builder.HasOne(p => p.PermissionType)
-               .WithMany()
+               .WithMany(pt => pt.Permissions)
                .HasForeignKey(p => p.PermissionTypeId);
 
         builder.Property(p => p.EmployeeForename)

@@ -46,14 +46,9 @@ namespace Permission.Infrastructure.Database.Migrations
                     b.Property<int>("PermissionTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PermissionTypeId1")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PermissionTypeId");
-
-                    b.HasIndex("PermissionTypeId1");
 
                     b.ToTable("Permission");
                 });
@@ -126,14 +121,10 @@ namespace Permission.Infrastructure.Database.Migrations
             modelBuilder.Entity("Permission.Domain.Entities.Permission", b =>
                 {
                     b.HasOne("Permission.Domain.Entities.PermissionType", "PermissionType")
-                        .WithMany()
+                        .WithMany("Permissions")
                         .HasForeignKey("PermissionTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Permission.Domain.Entities.PermissionType", null)
-                        .WithMany("Permissions")
-                        .HasForeignKey("PermissionTypeId1");
 
                     b.Navigation("PermissionType");
                 });

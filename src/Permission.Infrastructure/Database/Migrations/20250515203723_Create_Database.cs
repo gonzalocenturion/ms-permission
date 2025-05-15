@@ -35,8 +35,7 @@ namespace Permission.Infrastructure.Database.Migrations
                     EmployeeForename = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     EmployeeSurname = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PermissionTypeId = table.Column<int>(type: "int", nullable: false),
-                    PermissionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PermissionTypeId1 = table.Column<int>(type: "int", nullable: true)
+                    PermissionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,11 +46,6 @@ namespace Permission.Infrastructure.Database.Migrations
                         principalTable: "PermissionType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Permission_PermissionType_PermissionTypeId1",
-                        column: x => x.PermissionTypeId1,
-                        principalTable: "PermissionType",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -74,11 +68,6 @@ namespace Permission.Infrastructure.Database.Migrations
                 name: "IX_Permission_PermissionTypeId",
                 table: "Permission",
                 column: "PermissionTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Permission_PermissionTypeId1",
-                table: "Permission",
-                column: "PermissionTypeId1");
         }
 
         /// <inheritdoc />
