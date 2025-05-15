@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Permission.Domain\Permission.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
