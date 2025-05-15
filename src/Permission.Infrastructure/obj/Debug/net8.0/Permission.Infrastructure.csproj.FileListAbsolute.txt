@@ -1,0 +1,11 @@
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\bin\Debug\net8.0\Permission.Infrastructure.deps.json
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\bin\Debug\net8.0\Permission.Infrastructure.dll
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\bin\Debug\net8.0\Permission.Infrastructure.pdb
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\Permission.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\Permission.Infrastructure.AssemblyInfoInputs.cache
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\Permission.Infrastructure.AssemblyInfo.cs
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\Permission.Infrastructure.csproj.CoreCompileInputs.cache
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\Permission.Infrastructure.dll
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\refint\Permission.Infrastructure.dll
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\Permission.Infrastructure.pdb
+D:\repos\Challenges\Empresa_N5\ms-permission\src\Permission.Infrastructure\obj\Debug\net8.0\ref\Permission.Infrastructure.dll
