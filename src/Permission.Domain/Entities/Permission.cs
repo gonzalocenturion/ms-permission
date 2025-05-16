@@ -8,5 +8,5 @@ public class Permission
     public int PermissionTypeId { get; set; }
     public DateTime PermissionDate { get; set; }
 
-    public PermissionType PermissionType { get; set; }    
+    public PermissionType PermissionType { get; set; }
 }

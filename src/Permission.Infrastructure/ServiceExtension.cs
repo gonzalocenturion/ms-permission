@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Permission.Domain.Repository;
 using Permission.Infrastructure.Database;
+using Permission.Infrastructure.Repository;
 
 namespace Permission.Infrastructure;
 
@@ -13,7 +14,8 @@ public static class ServiceExtension
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDatabase(configuration);
+        services.AddDatabase(configuration)
+                .AddConfigurationServices();
 
         return services;
     }
@@ -25,8 +27,14 @@ public static class ServiceExtension
         services.AddDbContextPool<PermissionDbContext>(
             options => options
                 .UseSqlServer(connectionString, mssqlOpt =>
-                    mssqlOpt.MigrationsHistoryTable(HistoryRepository.DefaultTableName)));        
+                    mssqlOpt.MigrationsHistoryTable(HistoryRepository.DefaultTableName)));
 
+        return services;
+    }
+
+    private static IServiceCollection AddConfigurationServices(this IServiceCollection services)
+    {
+        services.AddTransient<IPermissionRepository, PermissionRepository>();
         return services;
     }
 }
