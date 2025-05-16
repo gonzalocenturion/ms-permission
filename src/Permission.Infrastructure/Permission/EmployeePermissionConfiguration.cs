@@ -3,12 +3,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Permission.Infrastructure.Permission;
 
-public class PermissionConfiguration : IEntityTypeConfiguration<Domain.Entities.Permission>
+public class EmployeePermissionConfiguration : IEntityTypeConfiguration<Domain.Entities.EmployeePermission>
 {
     private const int NAME_MAX_LEN = 100;
+    private const string PERMISSION_TABLE_NAME = "Permission";
 
-    public void Configure(EntityTypeBuilder<Domain.Entities.Permission> builder)
+    public void Configure(EntityTypeBuilder<Domain.Entities.EmployeePermission> builder)
     {
+        builder.ToTable(PERMISSION_TABLE_NAME);
+
         builder.HasOne(p => p.PermissionType)
                .WithMany(pt => pt.Permissions)
                .HasForeignKey(p => p.PermissionTypeId);

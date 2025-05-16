@@ -1,10 +1,12 @@
-﻿namespace Permission.Domain.Repository;
+﻿using Permission.Domain.Entities;
+
+namespace Permission.Domain.Repository;
 
 public interface IPermissionRepository
 {
-    Task<Entities.Permission?> GetByIdAsync(Guid id);
-    Task<IEnumerable<Entities.Permission>> GetAllAsync();
-    Task AddAsync(Entities.Permission Permission);
-    void Update(Entities.Permission Permission);
-    void Delete(Entities.Permission Permission);
+    Task<EmployeePermission?> GetByIdAsync(Guid id);
+    IQueryable<EmployeePermission> GetAll();
+    Task AddAsync(EmployeePermission Permission);
+    void Update(EmployeePermission Permission);
+    void Delete(EmployeePermission Permission);
 }

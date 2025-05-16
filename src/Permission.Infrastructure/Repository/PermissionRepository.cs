@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Permission.Domain.Entities;
 using Permission.Domain.Repository;
 using Permission.Infrastructure.Database;
 
@@ -10,13 +11,13 @@ public class PermissionRepository : IPermissionRepository
 
     public PermissionRepository(PermissionDbContext dbContext) => _dbContext = dbContext;
 
-    public async Task AddAsync(Domain.Entities.Permission permission) => await _dbContext.Permission.AddAsync(permission);
+    public async Task AddAsync(EmployeePermission permission) => await _dbContext.Permission.AddAsync(permission);
 
-    public void Delete(Domain.Entities.Permission permission) => _dbContext.Permission.Remove(permission);
+    public void Delete(EmployeePermission permission) => _dbContext.Permission.Remove(permission);
 
-    public async Task<IEnumerable<Domain.Entities.Permission>> GetAllAsync() => await _dbContext.Permission.AsNoTracking().ToListAsync();
+    public IQueryable<EmployeePermission> GetAll() => _dbContext.Permission.AsNoTracking();
 
-    public async Task<Domain.Entities.Permission?> GetByIdAsync(Guid id) => await _dbContext.Permission.FindAsync(id);
+    public async Task<EmployeePermission?> GetByIdAsync(Guid id) => await _dbContext.Permission.FindAsync(id);
 
-    public void Update(Domain.Entities.Permission permission) => _dbContext.Permission.Update(permission);
+    public void Update(EmployeePermission permission) => _dbContext.Permission.Update(permission);
 }

@@ -1,6 +1,6 @@
 ﻿namespace Permission.Domain.Entities;
 
-public class Permission
+public class EmployeePermission
 {
     public int Id { get; set; }
     public string EmployeeForename { get; set; }

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Permission.Application", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Permission.Domain", "src\Permission.Domain\Permission.Domain.csproj", "{4DDC0061-EC4E-4BEE-8A69-690BA5C997D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\SharedKernel\SharedKernel.csproj", "{02A62B25-79A3-435B-9111-6E341C861365}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{4DDC0061-EC4E-4BEE-8A69-690BA5C997D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DDC0061-EC4E-4BEE-8A69-690BA5C997D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DDC0061-EC4E-4BEE-8A69-690BA5C997D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02A62B25-79A3-435B-9111-6E341C861365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02A62B25-79A3-435B-9111-6E341C861365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02A62B25-79A3-435B-9111-6E341C861365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02A62B25-79A3-435B-9111-6E341C861365}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{47E9034A-CB0D-4258-A112-8E8F031F73DD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{19277C6B-C044-6185-20BA-561E0A2D4E95} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{4DDC0061-EC4E-4BEE-8A69-690BA5C997D1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{02A62B25-79A3-435B-9111-6E341C861365} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE790747-049E-4EE3-9735-78AD537DB943}
