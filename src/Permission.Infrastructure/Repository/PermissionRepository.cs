@@ -17,7 +17,7 @@ public class PermissionRepository : IPermissionRepository
 
     public IQueryable<EmployeePermission> GetAll() => _dbContext.Permission.AsNoTracking();
 
-    public async Task<EmployeePermission?> GetByIdAsync(Guid id) => await _dbContext.Permission.FindAsync(id);
+    public async Task<EmployeePermission?> GetByIdAsync(int id) => await _dbContext.Permission.FindAsync(id);
 
     public void Update(EmployeePermission permission) => _dbContext.Permission.Update(permission);
 }
