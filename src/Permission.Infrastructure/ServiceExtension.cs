@@ -35,6 +35,7 @@ public static class ServiceExtension
     private static IServiceCollection AddConfigurationServices(this IServiceCollection services)
     {
         services.AddTransient<IPermissionRepository, PermissionRepository>();
+        services.AddTransient<IWrapperRepository, WrapperRepository>();
         return services;
     }
 }
