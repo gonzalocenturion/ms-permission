@@ -10,7 +10,11 @@ public class EmployeePermissionConfiguration : IEntityTypeConfiguration<Domain.E
 
     public void Configure(EntityTypeBuilder<Domain.Entities.EmployeePermission> builder)
     {
-        builder.ToTable(PERMISSION_TABLE_NAME);
+        builder.ToTable(PERMISSION_TABLE_NAME); 
+
+        builder.Property(p => p.PermissionTypeId)
+               .HasColumnName("PermissionType")
+               .IsRequired();
 
         builder.HasOne(p => p.PermissionType)
                .WithMany(pt => pt.Permissions)

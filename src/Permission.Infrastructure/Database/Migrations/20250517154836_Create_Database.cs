@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -33,15 +34,15 @@ namespace Permission.Infrastructure.Database.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeForename = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     EmployeeSurname = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PermissionTypeId = table.Column<int>(type: "int", nullable: false),
+                    PermissionType = table.Column<int>(type: "int", nullable: false),
                     PermissionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Permission", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Permission_PermissionType_PermissionTypeId",
-                        column: x => x.PermissionTypeId,
+                        name: "FK_Permission_PermissionType_PermissionType",
+                        column: x => x.PermissionType,
                         principalTable: "PermissionType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -64,9 +65,9 @@ namespace Permission.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permission_PermissionTypeId",
+                name: "IX_Permission_PermissionType",
                 table: "Permission",
-                column: "PermissionTypeId");
+                column: "PermissionType");
         }
 
         /// <inheritdoc />

@@ -12,7 +12,7 @@ using Permission.Infrastructure.Database;
 namespace Permission.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(PermissionDbContext))]
-    [Migration("20250515203723_Create_Database")]
+    [Migration("20250517154836_Create_Database")]
     partial class Create_Database
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Permission.Infrastructure.Database.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Permission.Domain.Entities.Permission", b =>
+            modelBuilder.Entity("Permission.Domain.Entities.EmployeePermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,13 +47,14 @@ namespace Permission.Infrastructure.Database.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PermissionTypeId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("PermissionType");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PermissionTypeId");
 
-                    b.ToTable("Permission");
+                    b.ToTable("Permission", (string)null);
                 });
 
             modelBuilder.Entity("Permission.Domain.Entities.PermissionType", b =>
@@ -121,7 +122,7 @@ namespace Permission.Infrastructure.Database.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Permission.Domain.Entities.Permission", b =>
+            modelBuilder.Entity("Permission.Domain.Entities.EmployeePermission", b =>
                 {
                     b.HasOne("Permission.Domain.Entities.PermissionType", "PermissionType")
                         .WithMany("Permissions")
