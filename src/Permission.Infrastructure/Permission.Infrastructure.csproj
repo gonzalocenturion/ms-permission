@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Permission.Domain\Permission.Domain.csproj" />
-    <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\Permission.Application\Permission.Application.csproj" />
   </ItemGroup>
 
 </Project>
