@@ -5,7 +5,7 @@ using SharedKernel;
 
 namespace Permission.Application.Permission.Create;
 
-internal sealed class CreatePermissionCommandHandler(IWrapperRepository _uow) 
+internal sealed class CreatePermissionCommandHandler(IWrapperRepository _uow)
     : ICommandHandler<CreatePermissionCommand, int>
 {
     public async Task<Result<int>> Handle(CreatePermissionCommand command, CancellationToken cancellationToken)
@@ -21,6 +21,6 @@ internal sealed class CreatePermissionCommandHandler(IWrapperRepository _uow)
         await _uow.Permission.AddAsync(permission);
         await _uow.SaveChangesAsync();
 
-       return permission.Id;
+        return permission.Id;
     }
 }

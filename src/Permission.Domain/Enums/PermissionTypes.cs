@@ -5,29 +5,29 @@ namespace Permission.Domain.Enums;
 public enum PermissionTypes
 {
     [Description("Vacation")]
-    Vacation,
+    Vacation = 1,
 
     [Description("Sick Leave")]
-    SickLeave,
+    SickLeave = 2,
 
     [Description("Personal Leave")]
-    PersonalLeave,
+    PersonalLeave = 3,
 
     [Description("Bereavement Leave")]
-    BereavementLeave,
+    BereavementLeave = 4,
 
     [Description("Jury Duty")]
-    JuryDuty,
+    JuryDuty = 5,
 
     [Description("Parental Leave")]
-    ParentalLeave,
+    ParentalLeave = 6,
 
     [Description("Unpaid Leave")]
-    UnpaidLeave,
+    UnpaidLeave = 7,
 
     [Description("Remote Work")]
-    RemoteWork,
+    RemoteWork = 8,
 
     [Description("Study Leave")]
-    StudyLeave 
+    StudyLeave = 9
 }

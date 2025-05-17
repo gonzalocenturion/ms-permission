@@ -9,5 +9,5 @@ public class WrapperRepository(PermissionDbContext dbContext, IPermissionReposit
 
     public IPermissionRepository Permission => _permissionRepository ?? new PermissionRepository(_dbContext);
 
-    public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();    
+    public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();
 }
