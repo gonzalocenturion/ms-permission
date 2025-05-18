@@ -403,3 +403,5 @@ FodyWeavers.xsd
 # Ignore bin and obj folders recursively in all projects
 **/bin/
 **/obj/
+
+*.containers/

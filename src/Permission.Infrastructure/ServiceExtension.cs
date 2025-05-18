@@ -24,8 +24,6 @@ public static class ServiceExtension
                 .AddConfigurationServices()
                 .AddKakfaBus(configuration);
 
-        services.AddSingleton<IEventBus, KafkaEventBus>();
-
         return services;
     }
 
@@ -45,6 +43,8 @@ public static class ServiceExtension
     {
         services.AddTransient<IPermissionRepository, PermissionRepository>();
         services.AddTransient<IWrapperRepository, WrapperRepository>();
+        services.AddSingleton<IEventBus, KafkaEventBus>();
+
         return services;
     }
 

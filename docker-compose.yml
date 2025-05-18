@@ -1,236 +1,127 @@
 services:
-  # permission.api:
-  #   image: ${DOCKER_REGISTRY-}permissionapi
-  #   build:
-  #     context: .
-  #     dockerfile: src/Permission.API/Dockerfile
-
-  setup:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+  permission.api:
+    image: ${DOCKER_REGISTRY-}permissionapi
+    container_name: ms-permission
+    build:
+      context: .
+      dockerfile: src/Permission.API/Dockerfile
+    ports:
+      - 5000:8080
+      - 5001:8085
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__Database=Server=${SQL_SERVER};Database=${DB_NAME};User=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True;Encrypt=False;
+      - KafkaHost=${KAFKA_HOST}
+      - Serilog__MinimumLevel__Default=Information
+      - Serilog__MinimumLevel__Override__Microsoft.AspNetCore=Warning
+      - Serilog__WriteTo__0__Name=Console
+      - Serilog__WriteTo__1__Name=Elasticsearch
+      - Serilog__WriteTo__1__Args__nodeUris=http://elasticsearch:9200
+      - Serilog__WriteTo__1__Args__indexFormat=permission_system-{0:yyyy.MM.dd}
+      - Serilog__WriteTo__1__Args__numberOfShards=2
+      - Serilog__WriteTo__1__Args__numberOfReplicas=1
+      - Serilog__WriteTo__1__Args__inlineFields=true
+      - Serilog__WriteTo__1__Args__autoRegisterTemplate=true
+      - Serilog__Enrich__0=FromLogContext
+      - Serilog__Enrich__1=WithMachineName
+      - Serilog__Enrich__2=WithThreadId
+      - Serilog__Properties__Application=ms-permission
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: sqlserver
+    ports:
+      - '1433:1433'
+    environment:
+      SA_PASSWORD: "@dm1n123"
+      ACCEPT_EULA: "Y"
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
-    user: "0"
-    command: >
-      bash -c '
-        if [ x${ELASTIC_PASSWORD} == x ]; then
-          echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
-          exit 1;
-        elif [ x${KIBANA_PASSWORD} == x ]; then
-          echo "Set the KIBANA_PASSWORD environment variable in the .env file";
-          exit 1;
-        fi;
-        if [ ! -f config/certs/ca.zip ]; then
-          echo "Creating CA";
-          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
-          unzip config/certs/ca.zip -d config/certs;
-        fi;
-        if [ ! -f config/certs/certs.zip ]; then
-          echo "Creating certs";
-          echo -ne \
-          "instances:\n"\
-          "  - name: es01\n"\
-          "    dns:\n"\
-          "      - es01\n"\
-          "      - localhost\n"\
-          "    ip:\n"\
-          "      - 127.0.0.1\n"\
-          "  - name: es02\n"\
-          "    dns:\n"\
-          "      - es02\n"\
-          "      - localhost\n"\
-          "    ip:\n"\
-          "      - 127.0.0.1\n"\
-          "  - name: es03\n"\
-          "    dns:\n"\
-          "      - es03\n"\
-          "      - localhost\n"\
-          "    ip:\n"\
-          "      - 127.0.0.1\n"\
-          > config/certs/instances.yml;
-          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
-          unzip config/certs/certs.zip -d config/certs;
-        fi;
-        echo "Setting file permissions"
-        chown -R root:root config/certs;
-        find . -type d -exec chmod 750 \{\} \;;
-        find . -type f -exec chmod 640 \{\} \;;
-        echo "Waiting for Elasticsearch availability";
-        until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
-        echo "Setting kibana_system password";
-        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
-        echo "All done!";
-      '
+     - /d/repos/Challenges/Empresa_N5/ms-permission/containers/db:/var/opt/mssql/data 
     healthcheck:
-      test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
-      interval: 1s
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "@dm1n123", "-Q", "SELECT 1"]
+      interval: 10s
       timeout: 5s
-      retries: 120
-
-  es01:
-    depends_on:
-      setup:
-        condition: service_healthy
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    volumes:
-      - certs:/usr/share/elasticsearch/config/certs
-      - esdata01:/usr/share/elasticsearch/data
+      retries: 10
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1    
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
     ports:
-      - ${ES_PORT}:9200
-    environment:
-      - node.name=es01
-      - cluster.name=${CLUSTER_NAME}
-      - cluster.initial_master_nodes=es01,es02,es03
-      - discovery.seed_hosts=es02,es03
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
-      - xpack.security.http.ssl.key=certs/es01/es01.key
-      - xpack.security.http.ssl.certificate=certs/es01/es01.crt
-      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.key=certs/es01/es01.key
-      - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
-      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.license.self_generated.type=${LICENSE}
-      - xpack.ml.use_auto_machine_memory_percent=true
-    mem_limit: ${MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-
-  es02:
-    depends_on:
-      - es01
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    volumes:
-      - certs:/usr/share/elasticsearch/config/certs
-      - esdata02:/usr/share/elasticsearch/data
-    environment:
-      - node.name=es02
-      - cluster.name=${CLUSTER_NAME}
-      - cluster.initial_master_nodes=es01,es02,es03
-      - discovery.seed_hosts=es01,es03
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
-      - xpack.security.http.ssl.key=certs/es02/es02.key
-      - xpack.security.http.ssl.certificate=certs/es02/es02.crt
-      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.key=certs/es02/es02.key
-      - xpack.security.transport.ssl.certificate=certs/es02/es02.crt
-      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.license.self_generated.type=${LICENSE}
-      - xpack.ml.use_auto_machine_memory_percent=true
-    mem_limit: ${MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-
-  es03:
-    depends_on:
-      - es02
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    volumes:
-      - certs:/usr/share/elasticsearch/config/certs
-      - esdata03:/usr/share/elasticsearch/data
-    environment:
-      - node.name=es03
-      - cluster.name=${CLUSTER_NAME}
-      - cluster.initial_master_nodes=es01,es02,es03
-      - discovery.seed_hosts=es01,es02
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
-      - xpack.security.http.ssl.key=certs/es03/es03.key
-      - xpack.security.http.ssl.certificate=certs/es03/es03.crt
-      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.key=certs/es03/es03.key
-      - xpack.security.transport.ssl.certificate=certs/es03/es03.crt
-      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.license.self_generated.type=${LICENSE}
-      - xpack.ml.use_auto_machine_memory_percent=true
-    mem_limit: ${MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-
+      - 9200:9200
   kibana:
-    depends_on:
-      es01:
-        condition: service_healthy
-      es02:
-        condition: service_healthy
-      es03:
-        condition: service_healthy
-    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
-    volumes:
-      - certs:/usr/share/kibana/config/certs
-      - kibanadata:/usr/share/kibana/data
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    container_name: kibana
     ports:
-      - ${KIBANA_PORT}:5601
+      - 5601:5601
+    depends_on:
+      - elasticsearch
     environment:
-      - SERVERNAME=kibana
-      - ELASTICSEARCH_HOSTS=https://es01:9200
-      - ELASTICSEARCH_USERNAME=kibana_system
-      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
-      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
-    mem_limit: ${MEM_LIMIT}
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.8.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
 
-volumes:
-  certs:
-    driver: local
-  esdata01:
-    driver: local
-  esdata02:
-    driver: local
-  esdata03:
-    driver: local
-  kibanadata:
-    driver: local
+  broker:
+    image: confluentinc/cp-server:7.8.0
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "broker:9092", "--list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.8.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      broker:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+  kafka-tools:
+    image: confluentinc/cp-kafka:7.8.0
+    hostname: kafka
+    container_name: kafka
+    command: ["tail", "-f", "/dev/null"]
+    network_mode: "host"
+ 
