@@ -8,7 +8,8 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ApplySerilogConfiguration(context.Configuration));
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+
 
 builder.Services
     .AddApplication()
@@ -29,6 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ApplyMigrations();
+
+app.UseSerilogRequestLogging();
 
 app.UseExceptionHandler();
 
