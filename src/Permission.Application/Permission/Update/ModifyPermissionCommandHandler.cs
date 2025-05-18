@@ -1,13 +1,15 @@
-﻿using Permission.Application.Abstraction.Messaging;
+﻿using Permission.Application.Abstraction.EventBus;
+using Permission.Application.Abstraction.Messaging;
 using Permission.Domain.Entities;
+using Permission.Domain.Enums;
+using Permission.Domain.Events;
 using Permission.Domain.Repository;
 using Serilog;
 using SharedKernel;
-using System.Security;
 
 namespace Permission.Application.Permission.Update;
 
-internal sealed class ModifyPermissionCommandHandler(IWrapperRepository _uow)
+internal sealed class ModifyPermissionCommandHandler(IWrapperRepository _uow, IEventBus eventBus)
     : ICommandHandler<ModifyPermissionCommand>
 {
     public async Task<Result> Handle(ModifyPermissionCommand command, CancellationToken cancellationToken)
@@ -25,7 +27,9 @@ internal sealed class ModifyPermissionCommandHandler(IWrapperRepository _uow)
 
         await _uow.SaveChangesAsync();
 
-        Log.Information("PermissionRecord: {@Permission}", permissionToUpdate);
+        Log.Information("Modify-Permission: {@Permission}", permissionToUpdate);
+
+        await eventBus.PublishAsync(new OperationProducer(Guid.NewGuid(), Operations.Modify.ToString()));
 
         return Result.Success();
     }

@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Permission.Application.Abstraction.EventBus;
 using Permission.Application.Abstraction.Messaging;
 using Permission.Domain.Enums;
+using Permission.Domain.Events;
 using Permission.Domain.Repository;
 using Serilog;
 using SharedKernel;
 using SharedKernel.Extensions;
-using System.Security;
 
 namespace Permission.Application.Permission.Get;
 
-internal sealed class GetPermissionQueryHandler(IWrapperRepository _uow)
+internal sealed class GetPermissionQueryHandler(IWrapperRepository _uow, IEventBus eventBus)
     : IQueryHandler<GetPermissionQuery, List<PermissionResponse>>
 {
     public async Task<Result<List<PermissionResponse>>> Handle(GetPermissionQuery request, CancellationToken cancellationToken)
@@ -29,9 +30,11 @@ internal sealed class GetPermissionQueryHandler(IWrapperRepository _uow)
         {
             foreach (var permission in permissions)
             {
-                Log.Information("PermissionRecord: {@Permission}", permission);
+                Log.Information("Get-Permission: {@Permission}", permission);
             }
         }
+
+        await eventBus.PublishAsync(new OperationProducer(Guid.NewGuid(), Operations.Get.ToString()));
 
         return permissions;
     }

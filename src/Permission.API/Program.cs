@@ -1,3 +1,4 @@
+using KafkaFlow;
 using Permission.API;
 using Permission.API.Extensions;
 using Permission.APIExtensions;
@@ -36,6 +37,9 @@ app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
 app.MapControllers();
+
+var kafkaBus = app.Services.CreateKafkaBus();
+await kafkaBus.StartAsync();
 
 await app.RunAsync();
 
