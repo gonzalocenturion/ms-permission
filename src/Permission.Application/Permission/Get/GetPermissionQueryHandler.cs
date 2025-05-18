@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Permission.Application.Abstraction.Messaging;
+using Permission.Domain.Enums;
 using Permission.Domain.Repository;
+using Serilog;
 using SharedKernel;
+using SharedKernel.Extensions;
+using System.Security;
 
 namespace Permission.Application.Permission.Get;
 
@@ -17,10 +21,17 @@ internal sealed class GetPermissionQueryHandler(IWrapperRepository _uow)
                                                    EmployeeSurname = permission.EmployeeSurname,
                                                    Id = permission.Id,
                                                    PermissionDate = permission.PermissionDate,
-                                                   PermissionType = "enum.todescription()--implementar"
+                                                   PermissionType = ((PermissionTypes)permission.PermissionTypeId).ToDescription()
                                                })
                                                .ToListAsync(cancellationToken);
 
+        if (permissions != null && permissions.Any())
+        {
+            foreach (var permission in permissions)
+            {
+                Log.Information("PermissionRecord: {@Permission}", permission);
+            }
+        }
 
         return permissions;
     }

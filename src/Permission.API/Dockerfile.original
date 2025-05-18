@@ -13,10 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Permission.API/Permission.API.csproj", "src/Permission.API/"]
-COPY ["src/Permission.Infrastructure/Permission.Infrastructure.csproj", "src/Permission.Infrastructure/"]
-COPY ["src/Permission.Application/Permission.Application.csproj", "src/Permission.Application/"]
-COPY ["src/Permission.Domain/Permission.Domain.csproj", "src/Permission.Domain/"]
-COPY ["src/SharedKernel/SharedKernel.csproj", "src/SharedKernel/"]
 RUN dotnet restore "./src/Permission.API/Permission.API.csproj"
 COPY . .
 WORKDIR "/src/src/Permission.API"

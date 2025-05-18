@@ -1,7 +1,9 @@
 ﻿using Permission.Application.Abstraction.Messaging;
 using Permission.Domain.Entities;
 using Permission.Domain.Repository;
+using Serilog;
 using SharedKernel;
+using System.Security;
 
 namespace Permission.Application.Permission.Update;
 
@@ -22,6 +24,8 @@ internal sealed class ModifyPermissionCommandHandler(IWrapperRepository _uow)
         _uow.Permission.Update(permissionToUpdate);
 
         await _uow.SaveChangesAsync();
+
+        Log.Information("PermissionRecord: {@Permission}", permissionToUpdate);
 
         return Result.Success();
     }

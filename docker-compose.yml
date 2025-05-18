@@ -1,0 +1,6 @@
+services:
+  permission.api:
+    image: ${DOCKER_REGISTRY-}permissionapi
+    build:
+      context: .
+      dockerfile: src/Permission.API/Dockerfile

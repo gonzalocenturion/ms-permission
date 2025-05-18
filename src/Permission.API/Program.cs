@@ -3,9 +3,12 @@ using Permission.API.Extensions;
 using Permission.APIExtensions;
 using Permission.Application;
 using Permission.Infrastructure;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ApplySerilogConfiguration(context.Configuration));
 
 builder.Services
     .AddApplication()
